@@ -14,3 +14,4 @@ services:
       - PUID=${AUTOPVE_PUID:-1000}
       - PGID=${AUTOPVE_GUID:-1000}
       - VERBOSE_LOGGING=${AUTOPVE_VERBOSE_LOGGING:-TRUE} # Optional
+      - SSH_KEY_TYPE=${AUTOPVE_SSH_KEY_TYPE:-rsa} # Optional

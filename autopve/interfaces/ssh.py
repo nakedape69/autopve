@@ -20,9 +20,9 @@ def get_hosts(path: str = "data"):
 
 async def get_public_key(path: str = "data") -> str:
     path = Path(path).resolve()
-    if "id_rsa.pub" not in os.listdir(path) or "id_rsa" not in os.listdir(path):
-        await cli.Cli().shell(f"""ssh-keygen -t rsa -N "" -f {path}/id_rsa""")
-    with open(f"{path}/id_rsa.pub", "r", encoding="utf-8") as reader:
+    if f"id_{os.environ.get('SSH_KEY_TYPE', 'rsa')}.pub" not in os.listdir(path) or f"id_{os.environ.get('SSH_KEY_TYPE', 'rsa')}" not in os.listdir(path):
+        await cli.Cli().shell(f"""ssh-keygen -t {os.environ.get('SSH_KEY_TYPE', 'rsa')} -N "" -f {path}/id_{os.environ.get('SSH_KEY_TYPE', 'rsa')}""")
+    with open(f"{path}/id_{os.environ.get('SSH_KEY_TYPE', 'rsa')}.pub", "r", encoding="utf-8") as reader:
         return reader.read()
 
 
@@ -46,7 +46,7 @@ class Ssh(cli.Cli):
         if password is None:
             self.use_key = True
         self.options: Optional[Dict[str, str]] = options
-        self.key_path: str = f"{self._path}/id_rsa"
+        self.key_path: str = f"{self._path}/id_{os.environ.get('AUTOPVE_SSH_KEY_TYPE', 'rsa')}"
         self._base_command: str = ""
         self._full_command: str = ""
         self._config_path: str = f"{self._path}/config"
